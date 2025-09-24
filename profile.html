@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Optima Bank Loyalty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="dashboard.html" class="logo">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="vouchers.html">Vouchers</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <button class="icon-button cart-button" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="icon-button profile-button active" title="Profile">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" title="Sign Out" onclick="app.signOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Profile Header -->
+        <section class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">
+                    <!-- User initials will be inserted here -->
+                </div>
+                <div class="profile-info">
+                    <h1 id="userName">Loading...</h1>
+                    <p id="userEmail" style="margin-bottom: 0.5rem;">Loading...</p>
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <span style="color: var(--text-gray);">Points: </span>
+                            <span style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;" id="userPoints">0</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-gray);">Level: </span>
+                            <span style="color: var(--accent-gold); font-weight: 600;" id="membershipLevel">Silver</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-gray);">Member since: </span>
+                            <span style="color: var(--text-white);" id="memberSince">2024</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="showEditProfile()">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+        </section>
+
+        <!-- Account Statistics -->
+        <section class="user-stats" style="margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-value" id="totalRedeemed">0</div>
+                <div class="stat-label">Total Redeemed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pointsEarned" style="color: var(--success-green);">2,500</div>
+                <div class="stat-label">Points Earned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pointsSpent" style="color: var(--accent-orange);">1,500</div>
+                <div class="stat-label">Points Spent</div>
+            </div>
+        </section>
+
+        <!-- Tab Navigation -->
+        <section class="tab-navigation" style="margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--secondary-navy);">
+                <button class="tab-btn active" data-tab="redeemed" onclick="switchTab('redeemed')">
+                    <i class="fas fa-ticket-alt"></i> My Vouchers
+                </button>
+                <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+                    <i class="fas fa-history"></i> Redemption History
+                </button>
+                <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i> Account Settings
+                </button>
+            </div>
+        </section>
+
+        <!-- Tab Content -->
+        <!-- My Vouchers Tab -->
+        <section class="tab-content active" id="redeemedTab">
+            <div class="card">
+                <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>My Redeemed Vouchers</span>
+                    <div style="display: flex; gap: 1rem;">
+                        <select id="voucherFilter" style="padding: 0.5rem; border-radius: var(--border-radius-sm); background-color: var(--primary-navy); color: var(--text-white); border: 2px solid var(--secondary-navy);">
+                            <option value="all">All Vouchers</option>
+                            <option value="active">Active</option>
+                            <option value="used">Used</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="redeemedVouchersContainer">
+                    <!-- Redeemed vouchers will be displayed here -->
+                    <div class="no-vouchers" id="noVouchersMessage" style="text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <i class="fas fa-ticket-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No vouchers yet</h3>
+                        <p>Start redeeming vouchers to see them here</p>
+                        <a href="vouchers.html" class="btn btn-primary" style="margin-top: 1rem;">
+                            Browse Vouchers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Redemption History Tab -->
+        <section class="tab-content" id="historyTab">
+            <div class="card">
+                <div class="card-title">Redemption History</div>
+                
+                <div id="redemptionHistoryContainer">
+                    <!-- Redemption history will be displayed here -->
+                    <div class="no-history" style="text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No redemption history</h3>
+                        <p>Your redemption history will appear here once you redeem your first voucher</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Account Settings Tab -->
+        <section class="tab-content" id="settingsTab">
+            <div class="card">
+                <div class="card-title">Account Settings</div>
+                
+                <div style="display: grid; gap: 2rem;">
+                    <!-- Profile Settings -->
+                    <div>
+                        <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Profile Information</h4>
+                        <form id="profileForm" style="display: grid; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="settingsFullName">Full Name</label>
+                                <input type="text" id="settingsFullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="settingsEmail">Email Address</label>
+                                <input type="email" id="settingsEmail" name="email" required readonly>
+                                <small style="color: var(--text-light-gray); font-size: 0.85rem;">
+                                    Email cannot be changed. Contact support if needed.
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="justify-self: start;">
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div>
+                        <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Notification Preferences</h4>
+                        <div style="display: grid; gap: 1rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <label for="emailNotifications">Email notifications for new vouchers</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="pointsUpdates" checked>
+                                <label for="pointsUpdates">Points balance updates</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="promotionalEmails" checked>
+                                <label for="promotionalEmails">Promotional emails and offers</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Change -->
+                    <div>
+                        <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Security</h4>
+                        <button class="btn btn-outline" onclick="showChangePassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div style="border-top: 1px solid var(--error-red); padding-top: 2rem;">
+                        <h4 style="color: var(--error-red); margin-bottom: 1rem;">Danger Zone</h4>
+                        <button class="btn" style="background-color: var(--error-red); color: var(--text-white);" onclick="showDeleteAccount()">
+                            <i class="fas fa-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="cart-title">Shopping Cart</h3>
+            <button class="cart-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <!-- Cart items will be inserted here -->
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <!-- Cart total and checkout button will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <button class="modal-close" onclick="closeModal('editProfileModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="editFullName">Full Name</label>
+                        <input type="text" id="editFullName" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email Address</label>
+                        <input type="email" id="editEmail" name="email" required readonly>
+                        <small style="color: var(--text-light-gray); font-size: 0.85rem;">
+                            Email cannot be changed
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('editProfileModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfileChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Change Password</h3>
+                <button class="modal-close" onclick="closeModal('changePasswordModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <small style="color: var(--text-light-gray); font-size: 0.85rem;">
+                            Password must be at least 8 characters long
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('changePasswordModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voucher Detail Modal -->
+    <div class="modal-overlay" id="voucherDetailModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="voucherDetailTitle">Voucher Details</h3>
+                <button class="modal-close" onclick="closeModal('voucherDetailModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="voucherDetailContent">
+                <!-- Voucher detail content will be loaded here -->
+            </div>
+            <div class="modal-footer" id="voucherDetailActions">
+                <!-- Voucher actions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        let currentTab = 'redeemed';
+        let redeemedVouchers = [];
+        let redemptionHistory = [];
+        
+        // Sample redeemed vouchers (would come from database in production)
+        const sampleRedeemedVouchers = [
+            {
+                id: '1',
+                title: '$20 OFF Dining',
+                discount: '$20 OFF',
+                coupon_code: 'OPT8K3L9M2N1',
+                status: 'active',
+                redeemed_at: '2024-01-15T10:30:00Z',
+                expires_at: '2025-01-15T23:59:59Z',
+                used_at: null,
+                category: 'dining',
+                min_purchase: 50,
+                terms: 'Valid at participating restaurants only. Cannot be combined with other offers.'
+            },
+            {
+                id: '2',
+                title: 'Free Movie Ticket',
+                discount: 'FREE',
+                coupon_code: 'OPT5H7J8K9L0',
+                status: 'used',
+                redeemed_at: '2024-01-10T14:20:00Z',
+                expires_at: '2025-01-10T23:59:59Z',
+                used_at: '2024-01-12T19:30:00Z',
+                category: 'entertainment',
+                min_purchase: 0,
+                terms: 'Valid at participating cinemas. Subject to availability.'
+            }
+        ];
+        
+        const sampleHistory = [
+            {
+                id: 'RD1642341234567',
+                date: '2024-01-15T10:30:00Z',
+                vouchers: [
+                    {
+                        title: '$20 OFF Dining',
+                        quantity: 1,
+                        points_used: 500
+                    }
+                ],
+                total_points: 500,
+                total_vouchers: 1
+            },
+            {
+                id: 'RD1642234567890',
+                date: '2024-01-10T14:20:00Z',
+                vouchers: [
+                    {
+                        title: 'Free Movie Ticket',
+                        quantity: 1,
+                        points_used: 800
+                    },
+                    {
+                        title: '$10 Coffee Voucher',
+                        quantity: 2,
+                        points_used: 400
+                    }
+                ],
+                total_points: 1200,
+                total_vouchers: 3
+            }
+        ];
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!app.user) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            // Wait for user data to load
+            await app.loadUserData();
+            
+            // Initialize profile
+            initializeProfile();
+            
+            // Load data
+            loadRedeemedVouchers();
+            loadRedemptionHistory();
+        });
+        
+        function initializeProfile() {
+            const profile = app.user?.profile;
+            if (!profile) return;
+            
+            // Update profile information
+            document.getElementById('userName').textContent = profile.full_name || 'User';
+            document.getElementById('userEmail').textContent = app.user.email;
+            document.getElementById('userPoints').textContent = app.formatPoints(profile.points || 0);
+            document.getElementById('membershipLevel').textContent = profile.membership_level || 'Silver';
+            
+            // Update profile avatar
+            const avatar = document.getElementById('profileAvatar');
+            const initials = (profile.full_name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            avatar.textContent = initials;
+            
+            // Update member since (would come from database in production)
+            const memberSince = new Date(app.user.created_at).getFullYear();
+            document.getElementById('memberSince').textContent = memberSince;
+            
+            // Update form fields
+            document.getElementById('settingsFullName').value = profile.full_name || '';
+            document.getElementById('settingsEmail').value = app.user.email;
+        }
+        
+        function loadRedeemedVouchers() {
+            redeemedVouchers = [...sampleRedeemedVouchers];
+            renderRedeemedVouchers();
+            updateStats();
+        }
+        
+        function loadRedemptionHistory() {
+            redemptionHistory = [...sampleHistory];
+            renderRedemptionHistory();
+        }
+        
+        function updateStats() {
+            const totalRedeemed = redeemedVouchers.length;
+            const pointsSpent = redemptionHistory.reduce((total, h) => total + h.total_points, 0);
+            const pointsEarned = 2500; // Would come from backend
+            
+            document.getElementById('totalRedeemed').textContent = totalRedeemed;
+            document.getElementById('pointsSpent').textContent = app.formatPoints(pointsSpent);
+            document.getElementById('pointsEarned').textContent = app.formatPoints(pointsEarned);
+        }
+        
+        function renderRedeemedVouchers() {
+            const container = document.getElementById('redeemedVouchersContainer');
+            const filter = document.getElementById('voucherFilter').value;
+            const noVouchersMsg = document.getElementById('noVouchersMessage');
+            
+            let filteredVouchers = redeemedVouchers;
+            
+            if (filter !== 'all') {
+                filteredVouchers = redeemedVouchers.filter(voucher => voucher.status === filter);
+            }
+            
+            if (filteredVouchers.length === 0) {
+                noVouchersMsg.style.display = 'block';
+                return;
+            }
+            
+            noVouchersMsg.style.display = 'none';
+            
+            container.innerHTML = filteredVouchers.map(voucher => {
+                const isExpired = new Date(voucher.expires_at) < new Date();
+                const status = isExpired ? 'expired' : voucher.status;
+                
+                return `
+                    <div class="voucher-item" style="background: var(--primary-navy); padding: 1.5rem; border-radius: var(--border-radius-md); margin-bottom: 1rem; border-left: 4px solid ${getStatusColor(status)};">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                    <div style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); color: white; padding: 0.5rem 1rem; border-radius: var(--border-radius-sm); font-weight: 600;">
+                                        ${voucher.discount}
+                                    </div>
+                                    <h4 style="color: var(--text-white); margin: 0;">${voucher.title}</h4>
+                                </div>
+                                <div style="display: flex; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                    <div>
+                                        <span style="color: var(--text-gray); font-size: 0.85rem;">Code:</span>
+                                        <span style="color: var(--accent-orange); font-weight: 600; font-family: monospace;">${voucher.coupon_code}</span>
+                                        <button class="btn" onclick="copyToClipboard('${voucher.coupon_code}')" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.8rem; background: none; border: 1px solid var(--accent-orange); color: var(--accent-orange);">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <span style="color: var(--text-gray); font-size: 0.85rem;">Expires:</span>
+                                        <span style="color: var(--text-white);">${app.formatDate(voucher.expires_at)}</span>
+                                    </div>
+                                </div>
+                                <div style="color: var(--text-light-gray); font-size: 0.9rem;">
+                                    <i class="fas fa-shopping-cart"></i> Min purchase: $${voucher.min_purchase} • 
+                                    <i class="fas fa-calendar"></i> Redeemed: ${app.formatDate(voucher.redeemed_at)}
+                                    ${voucher.used_at ? ` • <i class="fas fa-check"></i> Used: ${app.formatDate(voucher.used_at)}` : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-left: 1rem;">
+                                <span class="voucher-status status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                                <button class="btn btn-outline btn-sm" onclick="showVoucherDetail('${voucher.id}')" style="font-size: 0.85rem;">
+                                    View Details
+                                </button>
+                                ${status === 'active' ? `
+                                    <button class="btn btn-primary btn-sm" onclick="markAsUsed('${voucher.id}')" style="font-size: 0.85rem;">
+                                        Mark as Used
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderRedemptionHistory() {
+            const container = document.getElementById('redemptionHistoryContainer');
+            
+            if (redemptionHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="no-history" style="text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No redemption history</h3>
+                        <p>Your redemption history will appear here once you redeem your first voucher</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = redemptionHistory.map(history => `
+                <div class="history-item" style="background: var(--primary-navy); padding: 1.5rem; border-radius: var(--border-radius-md); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">
+                                Redemption #${history.id}
+                            </h4>
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">
+                                <i class="fas fa-calendar"></i> ${app.formatDate(history.date)} • 
+                                <i class="fas fa-ticket-alt"></i> ${history.total_vouchers} voucher${history.total_vouchers !== 1 ? 's' : ''} • 
+                                <i class="fas fa-coins"></i> ${app.formatPoints(history.total_points)} points
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--accent-orange); font-weight: 600; font-size: 1.1rem;">
+                                -${app.formatPoints(history.total_points)} pts
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--secondary-navy); padding-top: 1rem;">
+                        <h5 style="color: var(--text-gray); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Vouchers Redeemed:</h5>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            ${history.vouchers.map(voucher => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: var(--secondary-navy); border-radius: var(--border-radius-sm);">
+                                    <span style="color: var(--text-white);">
+                                        ${voucher.title} 
+                                        ${voucher.quantity > 1 ? `<span style="color: var(--text-gray);">(x${voucher.quantity})</span>` : ''}
+                                    </span>
+                                    <span style="color: var(--accent-gold); font-weight: 600;">
+                                        ${app.formatPoints(voucher.points_used)} pts
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getStatusColor(status) {
+            switch (status) {
+                case 'active': return 'var(--success-green)';
+                case 'used': return 'var(--accent-orange)';
+                case 'expired': return 'var(--error-red)';
+                default: return 'var(--text-gray)';
+            }
+        }
+        
+        // Tab switching
+        window.switchTab = function(tabName) {
+            currentTab = tabName;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        };
+        
+        // Profile actions
+        window.showEditProfile = function() {
+            const modal = document.getElementById('editProfileModal');
+            const profile = app.user?.profile;
+            
+            document.getElementById('editFullName').value = profile?.full_name || '';
+            document.getElementById('editEmail').value = app.user.email;
+            
+            modal.classList.add('show');
+        };
+        
+        window.saveProfileChanges = function() {
+            const fullName = document.getElementById('editFullName').value.trim();
+            
+            if (!fullName) {
+                app.showNotification('Full name is required', 'error');
+                return;
+            }
+            
+            // Update local profile (would sync with backend in production)
+            app.user.profile.full_name = fullName;
+            
+            // Update UI
+            initializeProfile();
+            
+            // Close modal
+            closeModal('editProfileModal');
+            app.showNotification('Profile updated successfully!', 'success');
+        };
+        
+        window.showChangePassword = function() {
+            document.getElementById('changePasswordModal').classList.add('show');
+        };
+        
+        window.changePassword = function() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                app.showNotification('All password fields are required', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                app.showNotification('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (!app.validatePassword(newPassword)) {
+                app.showNotification('Password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            // Would implement actual password change with backend
+            closeModal('changePasswordModal');
+            app.showNotification('Password changed successfully!', 'success');
+        };
+        
+        window.showDeleteAccount = function() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                app.showNotification('Account deletion is not implemented in this demo', 'warning');
+            }
+        };
+        
+        // Voucher actions
+        window.showVoucherDetail = function(voucherId) {
+            const voucher = redeemedVouchers.find(v => v.id === voucherId);
+            if (!voucher) return;
+            
+            const modal = document.getElementById('voucherDetailModal');
+            const title = document.getElementById('voucherDetailTitle');
+            const content = document.getElementById('voucherDetailContent');
+            const actions = document.getElementById('voucherDetailActions');
+            
+            const isExpired = new Date(voucher.expires_at) < new Date();
+            const status = isExpired ? 'expired' : voucher.status;
+            
+            title.textContent = voucher.title;
+            
+            content.innerHTML = `
+                <div style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); padding: 2rem; border-radius: var(--border-radius-md); margin-bottom: 2rem; text-align: center; color: white;">
+                    <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">${voucher.discount}</div>
+                    <div style="font-size: 1.2rem; opacity: 0.9;">${voucher.title}</div>
+                    <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border-radius: 20px; display: inline-block;">
+                        <span class="voucher-status status-${status}" style="background: none; color: white; padding: 0;">
+                            ${status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm);">
+                        <div style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.25rem;">Coupon Code</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--accent-orange); font-weight: 600; font-family: monospace; font-size: 1.1rem;">${voucher.coupon_code}</span>
+                            <button class="btn btn-outline btn-sm" onclick="copyToClipboard('${voucher.coupon_code}')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm);">
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">Minimum Purchase</div>
+                            <div style="color: var(--accent-gold); font-size: 1.2rem; font-weight: 600;">$${voucher.min_purchase}</div>
+                        </div>
+                        <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm);">
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">Valid Until</div>
+                            <div style="color: var(--text-white); font-size: 1.1rem;">${app.formatDate(voucher.expires_at)}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">Usage Details</h4>
+                    <div style="color: var(--text-gray); line-height: 1.6;">
+                        <p><strong>Redeemed:</strong> ${app.formatDate(voucher.redeemed_at)}</p>
+                        ${voucher.used_at ? `<p><strong>Used:</strong> ${app.formatDate(voucher.used_at)}</p>` : ''}
+                        <p><strong>Category:</strong> ${voucher.category.charAt(0).toUpperCase() + voucher.category.slice(1)}</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">Terms & Conditions</h4>
+                    <p style="color: var(--text-gray); line-height: 1.6; font-size: 0.9rem;">${voucher.terms}</p>
+                </div>
+            `;
+            
+            actions.innerHTML = `
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-outline" onclick="closeModal('voucherDetailModal')">Close</button>
+                    ${status === 'active' ? `
+                        <button class="btn btn-primary" onclick="markAsUsed('${voucher.id}'); closeModal('voucherDetailModal');">
+                            Mark as Used
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        };
+        
+        window.markAsUsed = function(voucherId) {
+            const voucher = redeemedVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                voucher.status = 'used';
+                voucher.used_at = new Date().toISOString();
+                renderRedeemedVouchers();
+                app.showNotification('Voucher marked as used', 'success');
+            }
+        };
+        
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                app.showNotification('Copied to clipboard!', 'success');
+            }).catch(() => {
+                app.showNotification('Failed to copy', 'error');
+            });
+        };
+        
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        };
+        
+        // Voucher filter
+        document.getElementById('voucherFilter').addEventListener('change', renderRedeemedVouchers);
+        
+        // Profile form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProfileChanges();
+        });
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
+            }
+        });
+        
+        // Add CSS for tab styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .tab-btn {
+                background: none;
+                border: none;
+                color: var(--text-gray);
+                padding: 1rem 1.5rem;
+                cursor: pointer;
+                border-bottom: 3px solid transparent;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .tab-btn:hover {
+                color: var(--accent-orange);
+            }
+            .tab-btn.active {
+                color: var(--accent-orange);
+                border-bottom-color: var(--accent-orange);
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .profile-button.active {
+                background-color: var(--accent-orange);
+                color: var(--text-white);
+            }
+            .btn-sm {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Make app globally available
+        window.app = app;
+    </script>
+</body>
+</html>

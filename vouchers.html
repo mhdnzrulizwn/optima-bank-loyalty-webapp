@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Vouchers - Optima Bank Loyalty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="dashboard.html" class="logo">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="vouchers.html" class="active">Vouchers</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <button class="icon-button cart-button" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="icon-button profile-button" title="Profile" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" title="Sign Out" onclick="app.signOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header" style="margin-bottom: 2rem;">
+            <h1 style="color: var(--text-white); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-gift" style="color: var(--accent-orange);"></i>
+                All Vouchers & Rewards
+            </h1>
+            <p style="color: var(--text-gray);">Browse and discover all available rewards and vouchers</p>
+        </section>
+
+        <!-- User Points Display -->
+        <section class="points-display" style="margin-bottom: 2rem;">
+            <div class="card" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); text-align: center; padding: 1.5rem;">
+                <h3 style="margin-bottom: 0.5rem; color: var(--text-white);">Your Available Points</h3>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--text-white);" id="userPoints">0</div>
+            </div>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section" style="margin-bottom: 2rem;">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div style="position: relative;">
+                    <i class="search-icon fas fa-search"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search vouchers by name, category, or description...">
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1rem;">
+                <!-- Category Filter -->
+                <div class="filter-group">
+                    <label style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Category:</label>
+                    <select id="categoryFilter" class="filter-select" style="padding: 0.5rem; border-radius: var(--border-radius-sm); background-color: var(--secondary-navy); color: var(--text-white); border: 2px solid var(--primary-navy);">
+                        <option value="all">All Categories</option>
+                        <option value="dining">Dining</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="travel">Travel</option>
+                        <option value="wellness">Wellness</option>
+                    </select>
+                </div>
+
+                <!-- Points Range Filter -->
+                <div class="filter-group">
+                    <label style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Points Range:</label>
+                    <select id="pointsFilter" class="filter-select" style="padding: 0.5rem; border-radius: var(--border-radius-sm); background-color: var(--secondary-navy); color: var(--text-white); border: 2px solid var(--primary-navy);">
+                        <option value="all">All Points</option>
+                        <option value="0-500">0 - 500 Points</option>
+                        <option value="501-1000">501 - 1000 Points</option>
+                        <option value="1001-1500">1001 - 1500 Points</option>
+                        <option value="1501+">1501+ Points</option>
+                    </select>
+                </div>
+
+                <!-- Sort Filter -->
+                <div class="filter-group">
+                    <label style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Sort by:</label>
+                    <select id="sortFilter" class="filter-select" style="padding: 0.5rem; border-radius: var(--border-radius-sm); background-color: var(--secondary-navy); color: var(--text-white); border: 2px solid var(--primary-navy);">
+                        <option value="featured">Featured</option>
+                        <option value="points-low">Points: Low to High</option>
+                        <option value="points-high">Points: High to Low</option>
+                        <option value="name">Name A-Z</option>
+                        <option value="category">Category</option>
+                    </select>
+                </div>
+
+                <!-- Clear Filters -->
+                <button class="btn btn-outline" id="clearFilters" style="align-self: end;">
+                    <i class="fas fa-times"></i> Clear Filters
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Summary -->
+        <section class="results-summary" style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-gray);">
+                <span id="resultsCount">Showing all vouchers</span>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button class="view-toggle" data-view="grid" title="Grid View">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-toggle active" data-view="list" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vouchers Grid/List -->
+        <section class="vouchers-section">
+            <div class="vouchers-container" id="vouchersContainer">
+                <div class="vouchers-grid" id="vouchersGrid">
+                    <!-- Loading placeholder -->
+                    <div class="loading-placeholder" id="loadingPlaceholder">
+                        <div style="text-align: center; padding: 3rem; color: var(--text-gray); grid-column: 1 / -1;">
+                            <div class="loading" style="width: 40px; height: 40px; margin: 0 auto 1rem;"></div>
+                            <p>Loading vouchers...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Load More Button -->
+        <section class="load-more-section" style="text-align: center; margin-top: 2rem; display: none;" id="loadMoreSection">
+            <button class="btn btn-primary" id="loadMoreBtn">
+                Load More Vouchers
+            </button>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="cart-title">Shopping Cart</h3>
+            <button class="cart-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <!-- Cart items will be inserted here -->
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <!-- Cart total and checkout button will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Voucher Detail Modal -->
+    <div class="modal-overlay" id="voucherDetailModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="voucherDetailTitle">Voucher Details</h3>
+                <button class="modal-close" onclick="closeModal('voucherDetailModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="voucherDetailContent">
+                <!-- Voucher detail content will be loaded here -->
+            </div>
+            <div class="modal-footer" id="voucherDetailActions">
+                <!-- Voucher actions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Terms and Conditions</h3>
+                <button class="modal-close" onclick="closeModal('termsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="termsContent">
+                <!-- Terms content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('termsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        // Extended sample voucher data
+        const allVouchers = [
+            {
+                id: '1',
+                title: '$20 OFF Dining',
+                description: 'Get $20 off your next dining experience at participating restaurants. Valid for lunch and dinner.',
+                discount: '$20 OFF',
+                points_required: 500,
+                category: 'dining',
+                min_purchase: 50,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating restaurants only. Cannot be combined with other offers. One voucher per table.'
+            },
+            {
+                id: '2',
+                title: '15% OFF Shopping',
+                description: 'Save 15% on your shopping at selected retail partners including fashion, electronics, and home goods.',
+                discount: '15% OFF',
+                points_required: 300,
+                category: 'shopping',
+                min_purchase: 100,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at selected retail partners. Minimum purchase required. Not valid on sale items.'
+            },
+            {
+                id: '3',
+                title: 'Free Movie Ticket',
+                description: 'Enjoy a complimentary movie ticket at participating cinemas. Valid for standard screenings.',
+                discount: 'FREE',
+                points_required: 800,
+                category: 'entertainment',
+                min_purchase: 0,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating cinemas. Subject to availability. Not valid for premium screenings.'
+            },
+            {
+                id: '4',
+                title: '$50 Travel Voucher',
+                description: 'Get $50 off your next travel booking with our travel partners. Valid for flights, hotels, and packages.',
+                discount: '$50 OFF',
+                points_required: 1200,
+                category: 'travel',
+                min_purchase: 200,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid for travel bookings only. Minimum booking value required. Subject to availability.'
+            },
+            {
+                id: '5',
+                title: 'Spa Day Package',
+                description: 'Relax with a full spa day package at premium wellness centers. Includes massage and treatments.',
+                discount: '50% OFF',
+                points_required: 1500,
+                category: 'wellness',
+                min_purchase: 150,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating wellness centers. Advance booking required. Subject to availability.'
+            },
+            {
+                id: '6',
+                title: '$10 Coffee Voucher',
+                description: 'Enjoy premium coffee with this $10 voucher at participating coffee shops and cafes.',
+                discount: '$10 OFF',
+                points_required: 200,
+                category: 'dining',
+                min_purchase: 15,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating coffee shops only. Cannot be combined with other offers.'
+            },
+            {
+                id: '7',
+                title: '25% OFF Fashion',
+                description: 'Get 25% discount on fashion items at premium clothing stores and boutiques.',
+                discount: '25% OFF',
+                points_required: 600,
+                category: 'shopping',
+                min_purchase: 80,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating fashion retailers. Excludes designer brands and sale items.'
+            },
+            {
+                id: '8',
+                title: 'Concert Tickets',
+                description: 'Get free tickets to selected concerts and live music events at various venues.',
+                discount: 'FREE',
+                points_required: 1800,
+                category: 'entertainment',
+                min_purchase: 0,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Subject to availability. Valid for selected events only. Non-transferable.'
+            },
+            {
+                id: '9',
+                title: '$100 Hotel Stay',
+                description: 'Enjoy $100 off your hotel accommodation at partner hotels worldwide.',
+                discount: '$100 OFF',
+                points_required: 2000,
+                category: 'travel',
+                min_purchase: 300,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at partner hotels only. Advance booking required. Blackout dates may apply.'
+            },
+            {
+                id: '10',
+                title: 'Gym Membership',
+                description: 'Get 3 months free gym membership at participating fitness centers and gyms.',
+                discount: '3 Months FREE',
+                points_required: 2500,
+                category: 'wellness',
+                min_purchase: 0,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'New members only. Valid at participating gyms. Terms and conditions apply.'
+            },
+            {
+                id: '11',
+                title: '$5 Fast Food',
+                description: 'Quick and tasty meals with $5 off at participating fast food restaurants.',
+                discount: '$5 OFF',
+                points_required: 100,
+                category: 'dining',
+                min_purchase: 10,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating fast food chains. Cannot be combined with other offers.'
+            },
+            {
+                id: '12',
+                title: 'Electronics Discount',
+                description: 'Save 20% on electronics and gadgets at participating electronics stores.',
+                discount: '20% OFF',
+                points_required: 900,
+                category: 'shopping',
+                min_purchase: 200,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid on regular priced items only. Excludes Apple products and gaming consoles.'
+            }
+        ];
+        
+        let currentView = 'grid';
+        let filteredVouchers = [...allVouchers];
+        let displayedCount = 0;
+        const vouchersPerLoad = 8;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!app.user) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            // Wait for user data to load
+            await app.loadUserData();
+            
+            // Update UI with user information
+            updateUserPoints();
+            
+            // Load vouchers
+            loadVouchers();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        function updateUserPoints() {
+            const profile = app.user?.profile;
+            if (profile) {
+                document.getElementById('userPoints').textContent = app.formatPoints(profile.points || 0);
+            }
+        }
+        
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    applyFilters();
+                }, 300);
+            });
+            
+            // Filter controls
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('pointsFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortFilter').addEventListener('change', applyFilters);
+            
+            // Clear filters
+            document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+            
+            // View toggle
+            document.querySelectorAll('.view-toggle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.view-toggle').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentView = this.dataset.view;
+                    renderVouchers();
+                });
+            });
+            
+            // Load more button
+            document.getElementById('loadMoreBtn').addEventListener('click', loadMoreVouchers);
+        }
+        
+        function applyFilters() {
+            const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const pointsFilter = document.getElementById('pointsFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            // Start with all vouchers
+            filteredVouchers = [...allVouchers];
+            
+            // Apply search filter
+            if (searchQuery) {
+                filteredVouchers = filteredVouchers.filter(voucher => 
+                    voucher.title.toLowerCase().includes(searchQuery) ||
+                    voucher.description.toLowerCase().includes(searchQuery) ||
+                    voucher.category.toLowerCase().includes(searchQuery)
+                );
+            }
+            
+            // Apply category filter
+            if (categoryFilter !== 'all') {
+                filteredVouchers = filteredVouchers.filter(voucher => voucher.category === categoryFilter);
+            }
+            
+            // Apply points filter
+            if (pointsFilter !== 'all') {
+                const [min, max] = pointsFilter.includes('+') 
+                    ? [parseInt(pointsFilter.replace('+', '')), Infinity]
+                    : pointsFilter.split('-').map(Number);
+                
+                filteredVouchers = filteredVouchers.filter(voucher => 
+                    voucher.points_required >= min && voucher.points_required <= max
+                );
+            }
+            
+            // Apply sorting
+            switch (sortFilter) {
+                case 'points-low':
+                    filteredVouchers.sort((a, b) => a.points_required - b.points_required);
+                    break;
+                case 'points-high':
+                    filteredVouchers.sort((a, b) => b.points_required - a.points_required);
+                    break;
+                case 'name':
+                    filteredVouchers.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'category':
+                    filteredVouchers.sort((a, b) => a.category.localeCompare(b.category));
+                    break;
+                default:
+                    // Keep original order (featured)
+                    break;
+            }
+            
+            // Reset display count and render
+            displayedCount = 0;
+            renderVouchers();
+        }
+        
+        function clearAllFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('pointsFilter').value = 'all';
+            document.getElementById('sortFilter').value = 'featured';
+            
+            filteredVouchers = [...allVouchers];
+            displayedCount = 0;
+            renderVouchers();
+        }
+        
+        function loadVouchers() {
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('loadingPlaceholder').style.display = 'none';
+                filteredVouchers = [...allVouchers];
+                renderVouchers();
+            }, 1000);
+        }
+        
+        function renderVouchers() {
+            const container = document.getElementById('vouchersGrid');
+            const loadMoreSection = document.getElementById('loadMoreSection');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            if (filteredVouchers.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <h3>No vouchers found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                        <button class="btn btn-primary" onclick="clearAllFilters()">Clear Filters</button>
+                    </div>
+                `;
+                loadMoreSection.style.display = 'none';
+                resultsCount.textContent = 'No vouchers found';
+                return;
+            }
+            
+            const vouchersToShow = Math.min(displayedCount + vouchersPerLoad, filteredVouchers.length);
+            const vouchersSlice = filteredVouchers.slice(0, vouchersToShow);
+            
+            // Update container class based on view
+            container.className = currentView === 'grid' ? 'vouchers-grid' : 'vouchers-list';
+            
+            container.innerHTML = vouchersSlice.map(voucher => {
+                const userPoints = app.user?.profile?.points || 0;
+                const canAfford = userPoints >= voucher.points_required;
+                
+                if (currentView === 'grid') {
+                    return `
+                        <div class="voucher-card fade-in ${!canAfford ? 'disabled' : ''}">
+                            <div class="voucher-header">
+                                <div class="voucher-discount">${voucher.discount}</div>
+                                <div class="voucher-title">${voucher.title}</div>
+                            </div>
+                            <div class="voucher-body">
+                                <div class="voucher-points">
+                                    <span class="points-required">${app.formatPoints(voucher.points_required)} Points</span>
+                                    <span class="category-badge" style="background: var(--accent-purple); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.8rem; text-transform: capitalize;">
+                                        ${voucher.category}
+                                    </span>
+                                </div>
+                                <div class="voucher-description">${voucher.description}</div>
+                                <div style="margin: 1rem 0; color: var(--text-light-gray); font-size: 0.9rem;">
+                                    <i class="fas fa-shopping-cart"></i> Min purchase: $${voucher.min_purchase}
+                                </div>
+                                <div class="voucher-actions">
+                                    <button class="btn btn-outline" onclick="showVoucherDetail('${voucher.id}')">
+                                        View Details
+                                    </button>
+                                    <button class="btn btn-secondary ${!canAfford ? 'disabled' : ''}" 
+                                            onclick="addVoucherToCart('${voucher.id}')" 
+                                            ${!canAfford ? 'disabled' : ''}>
+                                        Add to Cart
+                                    </button>
+                                    <button class="btn btn-primary ${!canAfford ? 'disabled' : ''}" 
+                                            onclick="redeemVoucherNow('${voucher.id}')" 
+                                            ${!canAfford ? 'disabled' : ''}>
+                                        Redeem Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // List view
+                    return `
+                        <div class="voucher-list-item fade-in ${!canAfford ? 'disabled' : ''}" style="background: var(--secondary-navy); border-radius: var(--border-radius-md); padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                    <div class="voucher-discount" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); color: white; padding: 0.5rem 1rem; border-radius: var(--border-radius-sm); font-weight: 600;">
+                                        ${voucher.discount}
+                                    </div>
+                                    <h3 style="color: var(--text-white); margin: 0;">${voucher.title}</h3>
+                                    <span class="category-badge" style="background: var(--accent-purple); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.8rem; text-transform: capitalize;">
+                                        ${voucher.category}
+                                    </span>
+                                </div>
+                                <p style="color: var(--text-gray); margin: 0.5rem 0; line-height: 1.5;">${voucher.description}</p>
+                                <div style="display: flex; gap: 2rem; color: var(--text-light-gray); font-size: 0.9rem;">
+                                    <span><i class="fas fa-coins"></i> ${app.formatPoints(voucher.points_required)} Points</span>
+                                    <span><i class="fas fa-shopping-cart"></i> Min: $${voucher.min_purchase}</span>
+                                    <span><i class="fas fa-calendar"></i> Valid until ${app.formatDate(voucher.expiry_date)}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-left: 2rem;">
+                                <button class="btn btn-outline" onclick="showVoucherDetail('${voucher.id}')" style="min-width: 120px;">
+                                    View Details
+                                </button>
+                                <button class="btn btn-secondary ${!canAfford ? 'disabled' : ''}" 
+                                        onclick="addVoucherToCart('${voucher.id}')" 
+                                        ${!canAfford ? 'disabled' : ''}
+                                        style="min-width: 120px;">
+                                    Add to Cart
+                                </button>
+                                <button class="btn btn-primary ${!canAfford ? 'disabled' : ''}" 
+                                        onclick="redeemVoucherNow('${voucher.id}')" 
+                                        ${!canAfford ? 'disabled' : ''}
+                                        style="min-width: 120px;">
+                                    Redeem Now
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            
+            displayedCount = vouchersToShow;
+            
+            // Show/hide load more button
+            if (displayedCount < filteredVouchers.length) {
+                loadMoreSection.style.display = 'block';
+            } else {
+                loadMoreSection.style.display = 'none';
+            }
+            
+            // Update results count
+            resultsCount.textContent = `Showing ${displayedCount} of ${filteredVouchers.length} vouchers`;
+        }
+        
+        function loadMoreVouchers() {
+            renderVouchers();
+        }
+        
+        // Global functions for voucher actions
+        window.addVoucherToCart = function(voucherId) {
+            const voucher = allVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                app.addToCart(voucher, 1);
+            }
+        };
+        
+        window.redeemVoucherNow = function(voucherId) {
+            const voucher = allVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                // Clear cart and add this voucher
+                app.clearCart();
+                app.addToCart(voucher, 1);
+                // Proceed to checkout
+                window.location.href = 'checkout.html';
+            }
+        };
+        
+        window.showVoucherDetail = function(voucherId) {
+            const voucher = allVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                const modal = document.getElementById('voucherDetailModal');
+                const title = document.getElementById('voucherDetailTitle');
+                const content = document.getElementById('voucherDetailContent');
+                const actions = document.getElementById('voucherDetailActions');
+                
+                const userPoints = app.user?.profile?.points || 0;
+                const canAfford = userPoints >= voucher.points_required;
+                
+                title.textContent = voucher.title;
+                
+                content.innerHTML = `
+                    <div style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); padding: 1.5rem; border-radius: var(--border-radius-md); margin-bottom: 1.5rem; text-align: center; color: white;">
+                        <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">${voucher.discount}</div>
+                        <div style="font-size: 1.2rem; opacity: 0.9;">${voucher.title}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                            <div style="color: var(--accent-gold); font-size: 1.5rem; font-weight: 600;">${app.formatPoints(voucher.points_required)}</div>
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">Points Required</div>
+                        </div>
+                        <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                            <div style="color: var(--accent-orange); font-size: 1.5rem; font-weight: 600;">$${voucher.min_purchase}</div>
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">Minimum Purchase</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">Description</h4>
+                        <p style="color: var(--text-gray); line-height: 1.6;">${voucher.description}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">Details</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; color: var(--text-gray);">
+                            <span><i class="fas fa-tag"></i> Category: ${voucher.category.charAt(0).toUpperCase() + voucher.category.slice(1)}</span>
+                            <span><i class="fas fa-calendar"></i> Valid until: ${app.formatDate(voucher.expiry_date)}</span>
+                            <span><i class="fas fa-clock"></i> No expiry after redemption</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">Terms & Conditions</h4>
+                        <p style="color: var(--text-gray); line-height: 1.6; font-size: 0.9rem;">${voucher.terms}</p>
+                    </div>
+                `;
+                
+                actions.innerHTML = `
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-outline" onclick="closeModal('voucherDetailModal')">Close</button>
+                        <button class="btn btn-secondary ${!canAfford ? 'disabled' : ''}" 
+                                onclick="addVoucherToCart('${voucher.id}'); closeModal('voucherDetailModal');" 
+                                ${!canAfford ? 'disabled' : ''}>
+                            Add to Cart
+                        </button>
+                        <button class="btn btn-primary ${!canAfford ? 'disabled' : ''}" 
+                                onclick="redeemVoucherNow('${voucher.id}')" 
+                                ${!canAfford ? 'disabled' : ''}>
+                            Redeem Now
+                        </button>
+                    </div>
+                `;
+                
+                modal.classList.add('show');
+            }
+        };
+        
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        };
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
+            }
+        });
+        
+        // Add CSS for disabled vouchers
+        const style = document.createElement('style');
+        style.textContent = `
+            .voucher-card.disabled,
+            .voucher-list-item.disabled {
+                opacity: 0.6;
+            }
+            .voucher-card.disabled .voucher-header,
+            .voucher-list-item.disabled .voucher-discount {
+                background: linear-gradient(135deg, var(--text-light-gray), var(--text-gray)) !important;
+            }
+            .btn.disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .view-toggle {
+                background: none;
+                border: 2px solid var(--text-light-gray);
+                color: var(--text-light-gray);
+                padding: 0.5rem;
+                border-radius: var(--border-radius-sm);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .view-toggle:hover,
+            .view-toggle.active {
+                background: var(--accent-orange);
+                border-color: var(--accent-orange);
+                color: var(--text-white);
+            }
+            .vouchers-list {
+                display: flex;
+                flex-direction: column;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Make app globally available
+        window.app = app;
+    </script>
+</body>
+</html>

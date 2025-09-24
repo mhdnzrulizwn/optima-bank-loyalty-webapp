@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Optima Bank Loyalty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- PDF Generation Library -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="dashboard.html" class="logo">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="vouchers.html">Vouchers</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <button class="icon-button cart-button" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="icon-button profile-button" title="Profile" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" title="Sign Out" onclick="app.signOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header" style="margin-bottom: 2rem;">
+            <h1 style="color: var(--text-white); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-credit-card" style="color: var(--accent-orange);"></i>
+                Checkout
+            </h1>
+            <p style="color: var(--text-gray);">Review your vouchers and complete redemption</p>
+        </section>
+
+        <!-- Checkout Content -->
+        <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start;" id="checkoutLayout">
+            
+            <!-- Cart Items Section -->
+            <section class="cart-items-section">
+                <div class="card">
+                    <div class="card-title" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span>Your Cart</span>
+                        <span style="color: var(--text-gray); font-size: 0.9rem;" id="itemCount">0 items</span>
+                    </div>
+                    
+                    <div id="cartItemsContainer">
+                        <!-- Cart items will be rendered here -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1.5rem;" id="emptyCartMessage" class="hidden">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light-gray); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--text-gray); margin-bottom: 0.5rem;">Your cart is empty</h3>
+                        <p style="color: var(--text-light-gray); margin-bottom: 1.5rem;">Add some vouchers to get started</p>
+                        <a href="vouchers.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Browse Vouchers
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Order Summary Section -->
+            <section class="order-summary-section">
+                <div class="card" style="position: sticky; top: 100px;">
+                    <div class="card-title" style="margin-bottom: 1.5rem;">Order Summary</div>
+                    
+                    <!-- User Points Display -->
+                    <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-gray);">Your Points:</span>
+                            <span style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;" id="userPoints">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Details -->
+                    <div id="orderDetails">
+                        <div class="order-line" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--text-gray);">
+                            <span>Subtotal:</span>
+                            <span id="subtotalPoints">0 pts</span>
+                        </div>
+                        <div class="order-line" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--text-gray);">
+                            <span>Processing Fee:</span>
+                            <span>Free</span>
+                        </div>
+                        <hr style="border: none; border-top: 1px solid var(--primary-navy); margin: 1rem 0;">
+                        <div class="order-line" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-weight: 600; font-size: 1.1rem;">
+                            <span style="color: var(--text-white);">Total:</span>
+                            <span style="color: var(--accent-orange);" id="totalPoints">0 pts</span>
+                        </div>
+                        
+                        <!-- Points Balance After -->
+                        <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--text-gray);">Points After Redemption:</span>
+                                <span style="font-weight: 600; font-size: 1.1rem;" id="remainingPoints">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Redemption Button -->
+                    <button class="btn btn-success btn-full-width" id="redeemButton" onclick="processRedemption()">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Redeem Vouchers</span>
+                        <div class="loading hidden"></div>
+                    </button>
+                    
+                    <!-- Continue Shopping -->
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="vouchers.html" style="color: var(--accent-orange); text-decoration: none; font-size: 0.9rem;">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Mobile Layout for smaller screens -->
+        <div style="display: none;" id="mobileCheckoutLayout">
+            <section class="cart-items-section" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-title" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span>Your Cart</span>
+                        <span style="color: var(--text-gray); font-size: 0.9rem;" id="mobileItemCount">0 items</span>
+                    </div>
+                    
+                    <div id="mobileCartItemsContainer">
+                        <!-- Cart items will be rendered here -->
+                    </div>
+                </div>
+            </section>
+
+            <section class="order-summary-section">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 1.5rem;">Order Summary</div>
+                    
+                    <div id="mobileOrderSummary">
+                        <!-- Order summary content will be copied here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: var(--success-green);">
+                    <i class="fas fa-check-circle"></i> Redemption Successful!
+                </h3>
+            </div>
+            <div class="modal-body" id="successContent">
+                <!-- Success content will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('successModal')">View Later</button>
+                <button class="btn btn-success" onclick="downloadVoucherPDF()">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+                <button class="btn btn-primary" onclick="window.location.href='profile.html'">
+                    View Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: var(--error-red);">
+                    <i class="fas fa-exclamation-circle"></i> Redemption Failed
+                </h3>
+                <button class="modal-close" onclick="closeModal('errorModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="errorContent">
+                <!-- Error content will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('errorModal')">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        let redeemedVouchers = [];
+        let redemptionData = null;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!app.user) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            // Wait for user data to load
+            await app.loadUserData();
+            
+            // Initialize checkout
+            initializeCheckout();
+            
+            // Set up responsive layout
+            setupResponsiveLayout();
+        });
+        
+        function initializeCheckout() {
+            updateUserPoints();
+            renderCartItems();
+            updateOrderSummary();
+            
+            // If cart is empty, show empty message
+            if (app.cart.length === 0) {
+                showEmptyCart();
+            }
+        }
+        
+        function updateUserPoints() {
+            const profile = app.user?.profile;
+            const userPointsElements = document.querySelectorAll('#userPoints');
+            const points = profile?.points || 0;
+            
+            userPointsElements.forEach(element => {
+                element.textContent = app.formatPoints(points) + ' pts';
+            });
+        }
+        
+        function renderCartItems() {
+            const container = document.getElementById('cartItemsContainer');
+            const mobileContainer = document.getElementById('mobileCartItemsContainer');
+            const itemCount = document.getElementById('itemCount');
+            const mobileItemCount = document.getElementById('mobileItemCount');
+            
+            if (app.cart.length === 0) {
+                return;
+            }
+            
+            const totalItems = app.cart.reduce((sum, item) => sum + item.quantity, 0);
+            itemCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            mobileItemCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            
+            const cartHTML = app.cart.map(item => `
+                <div class="checkout-item" style="background: var(--primary-navy); padding: 1.5rem; border-radius: var(--border-radius-md); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">${item.title}</h4>
+                            <div style="display: inline-block; background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple)); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem;">
+                                ${item.discount}
+                            </div>
+                            <p style="color: var(--text-gray); font-size: 0.9rem; margin: 0.5rem 0;">${item.description}</p>
+                            <div style="color: var(--text-light-gray); font-size: 0.85rem;">
+                                <i class="fas fa-shopping-cart"></i> Min purchase: $${item.min_purchase} • 
+                                <i class="fas fa-tag"></i> ${item.category}
+                            </div>
+                        </div>
+                        <button class="btn btn-outline" onclick="removeFromCheckout('${item.id}')" title="Remove item" style="margin-left: 1rem; padding: 0.5rem; min-width: auto;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--secondary-navy); padding-top: 1rem;">
+                        <div class="quantity-controls" style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="color: var(--text-gray);">Quantity:</span>
+                            <button class="quantity-btn" onclick="updateCheckoutQuantity('${item.id}', ${item.quantity - 1})">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity-display" style="background: var(--secondary-navy); padding: 0.5rem 1rem; border-radius: var(--border-radius-sm); min-width: 50px; text-align: center;">
+                                ${item.quantity}
+                            </span>
+                            <button class="quantity-btn" onclick="updateCheckoutQuantity('${item.id}', ${item.quantity + 1})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        
+                        <div style="text-align: right;">
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">Unit: ${app.formatPoints(item.points_required)} pts</div>
+                            <div style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;">
+                                Total: ${app.formatPoints(item.points_required * item.quantity)} pts
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = cartHTML;
+            if (mobileContainer) {
+                mobileContainer.innerHTML = cartHTML;
+            }
+        }
+        
+        function updateOrderSummary() {
+            const subtotal = app.getCartTotal();
+            const userPoints = app.user?.profile?.points || 0;
+            const remaining = userPoints - subtotal;
+            
+            // Update all summary elements
+            const elements = {
+                subtotalPoints: `${app.formatPoints(subtotal)} pts`,
+                totalPoints: `${app.formatPoints(subtotal)} pts`,
+                remainingPoints: app.formatPoints(remaining) + ' pts'
+            };
+            
+            Object.entries(elements).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            });
+            
+            // Update remaining points color
+            const remainingElement = document.getElementById('remainingPoints');
+            if (remainingElement) {
+                remainingElement.style.color = remaining >= 0 ? 'var(--success-green)' : 'var(--error-red)';
+            }
+            
+            // Update redeem button state
+            const redeemButton = document.getElementById('redeemButton');
+            if (redeemButton) {
+                const canRedeem = subtotal > 0 && remaining >= 0;
+                redeemButton.disabled = !canRedeem;
+                redeemButton.className = `btn ${canRedeem ? 'btn-success' : 'btn-outline'} btn-full-width`;
+                
+                if (!canRedeem) {
+                    redeemButton.innerHTML = `
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>${subtotal === 0 ? 'Cart is Empty' : 'Insufficient Points'}</span>
+                    `;
+                } else {
+                    redeemButton.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <span>Redeem Vouchers</span>
+                        <div class="loading hidden"></div>
+                    `;
+                }
+            }
+        }
+        
+        function showEmptyCart() {
+            document.getElementById('checkoutLayout').style.display = 'none';
+            document.getElementById('mobileCheckoutLayout').style.display = 'none';
+            document.getElementById('emptyCartMessage').classList.remove('hidden');
+        }
+        
+        function setupResponsiveLayout() {
+            function updateLayout() {
+                const desktop = document.getElementById('checkoutLayout');
+                const mobile = document.getElementById('mobileCheckoutLayout');
+                
+                if (window.innerWidth <= 768) {
+                    desktop.style.display = 'none';
+                    mobile.style.display = 'block';
+                    // Copy order summary to mobile
+                    const desktopSummary = desktop.querySelector('.order-summary-section .card').innerHTML;
+                    document.getElementById('mobileOrderSummary').innerHTML = desktopSummary;
+                } else {
+                    desktop.style.display = 'grid';
+                    mobile.style.display = 'none';
+                }
+            }
+            
+            updateLayout();
+            window.addEventListener('resize', updateLayout);
+        }
+        
+        // Global functions
+        window.removeFromCheckout = function(voucherId) {
+            app.removeFromCart(voucherId);
+            initializeCheckout();
+            
+            if (app.cart.length === 0) {
+                showEmptyCart();
+            }
+        };
+        
+        window.updateCheckoutQuantity = function(voucherId, newQuantity) {
+            app.updateCartQuantity(voucherId, newQuantity);
+            initializeCheckout();
+            
+            if (app.cart.length === 0) {
+                showEmptyCart();
+            }
+        };
+        
+        window.processRedemption = async function() {
+            if (app.cart.length === 0) {
+                app.showNotification('Your cart is empty', 'warning');
+                return;
+            }
+            
+            const userPoints = app.user?.profile?.points || 0;
+            const totalRequired = app.getCartTotal();
+            
+            if (totalRequired > userPoints) {
+                showErrorModal('Insufficient points for redemption. Please remove some items or add more points to your account.');
+                return;
+            }
+            
+            const redeemButton = document.getElementById('redeemButton');
+            const btnText = redeemButton.querySelector('span');
+            const loading = redeemButton.querySelector('.loading');
+            
+            // Show loading state
+            btnText.style.display = 'none';
+            loading.classList.remove('hidden');
+            redeemButton.disabled = true;
+            
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Generate redemption data
+                redemptionData = {
+                    redemption_id: generateUniqueId(),
+                    user_id: app.user.id,
+                    vouchers: app.cart.map(item => ({
+                        ...item,
+                        coupon_code: generateCouponCode(),
+                        redeemed_at: new Date().toISOString(),
+                        expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // 1 year from now
+                    })),
+                    total_points_used: totalRequired,
+                    redeemed_at: new Date().toISOString()
+                };
+                
+                redeemedVouchers = [...redemptionData.vouchers];
+                
+                // Update user points (simulate backend update)
+                app.user.profile.points -= totalRequired;
+                
+                // Clear the cart
+                app.clearCart();
+                
+                // Show success modal
+                showSuccessModal(redemptionData);
+                
+            } catch (error) {
+                console.error('Redemption error:', error);
+                showErrorModal('An error occurred during redemption. Please try again.');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                loading.classList.add('hidden');
+                redeemButton.disabled = false;
+            }
+        };
+        
+        function showSuccessModal(data) {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('successContent');
+            
+            const totalVouchers = data.vouchers.reduce((sum, v) => sum + v.quantity, 0);
+            
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="background: var(--success-green); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i class="fas fa-check" style="font-size: 2rem; color: white;"></i>
+                    </div>
+                    <h3 style="color: var(--text-white); margin-bottom: 1rem;">Congratulations!</h3>
+                    <p style="color: var(--text-gray); font-size: 1.1rem;">
+                        You have successfully redeemed ${totalVouchers} voucher${totalVouchers !== 1 ? 's' : ''} 
+                        for ${app.formatPoints(data.total_points_used)} points.
+                    </p>
+                </div>
+                
+                <div style="background: var(--primary-navy); padding: 1.5rem; border-radius: var(--border-radius-md); margin-bottom: 2rem;">
+                    <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Redemption Summary</h4>
+                    ${data.vouchers.map(voucher => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--secondary-navy);">
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-white);">${voucher.title}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-gray);">
+                                    Qty: ${voucher.quantity} • Code: ${voucher.coupon_code}
+                                </div>
+                            </div>
+                            <div style="color: var(--accent-gold); font-weight: 600;">
+                                ${app.formatPoints(voucher.points_required * voucher.quantity)} pts
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="background: var(--secondary-navy); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                    <div style="color: var(--text-gray); margin-bottom: 0.5rem;">Your vouchers are ready!</div>
+                    <div style="color: var(--accent-orange); font-weight: 600;">
+                        Download your PDF or view them in your profile
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+        
+        function showErrorModal(message) {
+            const modal = document.getElementById('errorModal');
+            const content = document.getElementById('errorContent');
+            
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div style="background: var(--error-red); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i class="fas fa-times" style="font-size: 1.5rem; color: white;"></i>
+                    </div>
+                    <p style="color: var(--text-gray); line-height: 1.6;">${message}</p>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+        
+        window.downloadVoucherPDF = function() {
+            if (!redemptionData || !redeemedVouchers.length) {
+                app.showNotification('No voucher data available for download', 'error');
+                return;
+            }
+            
+            try {
+                generateVoucherPDF(redemptionData);
+                app.showNotification('PDF downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                app.showNotification('Error generating PDF. Please try again.', 'error');
+            }
+        };
+        
+        function generateVoucherPDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // PDF Header
+            doc.setFontSize(20);
+            doc.setTextColor(255, 107, 53); // Orange color
+            doc.text('Optima Bank Loyalty Program', 20, 30);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Redeemed Vouchers', 20, 45);
+            
+            // User Info
+            doc.setFontSize(10);
+            doc.text(`Customer: ${app.user.profile.full_name}`, 20, 60);
+            doc.text(`Email: ${app.user.email}`, 20, 70);
+            doc.text(`Redemption Date: ${new Date(data.redeemed_at).toLocaleDateString()}`, 20, 80);
+            doc.text(`Redemption ID: ${data.redemption_id}`, 20, 90);
+            
+            let yPosition = 110;
+            
+            // Vouchers
+            data.vouchers.forEach((voucher, index) => {
+                if (yPosition > 250) {
+                    doc.addPage();
+                    yPosition = 30;
+                }
+                
+                // Voucher header
+                doc.setFillColor(26, 26, 46); // Dark navy
+                doc.rect(20, yPosition - 5, 170, 15, 'F');
+                
+                doc.setFontSize(12);
+                doc.setTextColor(255, 255, 255);
+                doc.text(`${voucher.title} (${voucher.discount})`, 25, yPosition + 5);
+                
+                yPosition += 20;
+                
+                // Voucher details
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(10);
+                doc.text(`Coupon Code: ${voucher.coupon_code}`, 25, yPosition);
+                doc.text(`Quantity: ${voucher.quantity}`, 25, yPosition + 10);
+                doc.text(`Points Used: ${app.formatPoints(voucher.points_required * voucher.quantity)}`, 25, yPosition + 20);
+                doc.text(`Valid Until: ${new Date(voucher.expires_at).toLocaleDateString()}`, 25, yPosition + 30);
+                doc.text(`Min Purchase: $${voucher.min_purchase}`, 25, yPosition + 40);
+                
+                // Generate barcode for coupon code
+                try {
+                    const canvas = document.createElement('canvas');
+                    JsBarcode(canvas, voucher.coupon_code, {
+                        format: "CODE128",
+                        width: 1,
+                        height: 30,
+                        displayValue: false
+                    });
+                    
+                    const barcodeDataUrl = canvas.toDataURL();
+                    doc.addImage(barcodeDataUrl, 'PNG', 120, yPosition, 60, 15);
+                } catch (error) {
+                    console.error('Barcode generation error:', error);
+                }
+                
+                // Terms
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Terms: ${voucher.terms}`, 25, yPosition + 55, { maxWidth: 160 });
+                
+                yPosition += 75;
+                
+                // Separator
+                if (index < data.vouchers.length - 1) {
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(20, yPosition, 190, yPosition);
+                    yPosition += 10;
+                }
+            });
+            
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Thank you for using Optima Bank Loyalty Program!', 20, 280);
+            doc.text('For support, contact us at support@optimabank.com', 20, 285);
+            
+            // Save PDF
+            const fileName = `optima_vouchers_${data.redemption_id}.pdf`;
+            doc.save(fileName);
+        }
+        
+        function generateUniqueId() {
+            return 'RD' + Date.now().toString() + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
+        
+        function generateCouponCode() {
+            const prefix = 'OPT';
+            const suffix = Math.random().toString(36).substr(2, 8).toUpperCase();
+            return `${prefix}${suffix}`;
+        }
+        
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            
+            if (modalId === 'successModal') {
+                // Redirect to home page after closing success modal
+                window.location.href = 'dashboard.html';
+            }
+        };
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                const modalId = e.target.id;
+                closeModal(modalId);
+            }
+        });
+        
+        // Make app globally available
+        window.app = app;
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Optima Bank Loyalty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <form class="auth-form" id="signupForm">
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem; font-size: 2rem;">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </div>
+            
+            <h1>Create Account</h1>
+            
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <div class="error-message" id="fullNameError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error-message" id="passwordError"></div>
+                <small style="color: var(--text-light-gray); font-size: 0.85rem;">
+                    Password must be at least 8 characters long
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                <label for="agreeTerms">
+                    I agree to the <a href="#" style="color: var(--accent-orange);">Terms of Service</a> 
+                    and <a href="#" style="color: var(--accent-orange);">Privacy Policy</a>
+                </label>
+            </div>
+            <div class="error-message" id="agreeTermsError"></div>
+            
+            <button type="submit" class="btn btn-success btn-full-width" id="signupBtn">
+                <span class="btn-text">Create Account</span>
+                <div class="loading hidden"></div>
+            </button>
+            
+            <div style="text-align: center; margin: 1.5rem 0; color: var(--text-gray);">
+                <hr style="border: none; border-top: 1px solid var(--text-light-gray); margin: 1rem 0;">
+                <span style="background: var(--secondary-navy); padding: 0 1rem;">OR</span>
+            </div>
+            
+            <button type="button" class="google-signin-btn" id="googleSignupBtn">
+                <i class="fab fa-google"></i>
+                <span>Sign up with Google</span>
+            </button>
+            
+            <div class="auth-switch">
+                Already have an account? <a href="signin.html">Sign in</a>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signupForm');
+            const signupBtn = document.getElementById('signupBtn');
+            const btnText = signupBtn.querySelector('.btn-text');
+            const loading = signupBtn.querySelector('.loading');
+            const googleSignupBtn = document.getElementById('googleSignupBtn');
+            
+            // Form validation
+            function validateForm() {
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const agreeTerms = document.getElementById('agreeTerms').checked;
+                
+                let isValid = true;
+                
+                // Reset previous errors
+                clearErrors();
+                
+                // Full name validation
+                if (!fullName) {
+                    showFieldError('fullName', 'Full name is required');
+                    isValid = false;
+                } else if (fullName.length < 2) {
+                    showFieldError('fullName', 'Full name must be at least 2 characters');
+                    isValid = false;
+                }
+                
+                // Email validation
+                if (!email) {
+                    showFieldError('email', 'Email is required');
+                    isValid = false;
+                } else if (!app.validateEmail(email)) {
+                    showFieldError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Password validation
+                if (!password) {
+                    showFieldError('password', 'Password is required');
+                    isValid = false;
+                } else if (!app.validatePassword(password)) {
+                    showFieldError('password', 'Password must be at least 8 characters long');
+                    isValid = false;
+                }
+                
+                // Confirm password validation
+                if (!confirmPassword) {
+                    showFieldError('confirmPassword', 'Please confirm your password');
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    showFieldError('confirmPassword', 'Passwords do not match');
+                    isValid = false;
+                }
+                
+                // Terms agreement validation
+                if (!agreeTerms) {
+                    showFieldError('agreeTerms', 'You must agree to the Terms of Service and Privacy Policy');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            function showFieldError(fieldName, message) {
+                const field = document.getElementById(fieldName);
+                const errorElement = document.getElementById(fieldName + 'Error');
+                
+                if (field.type === 'checkbox') {
+                    // For checkboxes, don't add error class to the field itself
+                    errorElement.textContent = message;
+                    errorElement.classList.add('show');
+                } else {
+                    field.classList.add('error');
+                    errorElement.textContent = message;
+                    errorElement.classList.add('show');
+                }
+            }
+            
+            function clearErrors() {
+                const fields = ['fullName', 'email', 'password', 'confirmPassword', 'agreeTerms'];
+                fields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    const errorElement = document.getElementById(fieldName + 'Error');
+                    
+                    if (field.type !== 'checkbox') {
+                        field.classList.remove('error');
+                    }
+                    errorElement.classList.remove('show');
+                });
+            }
+            
+            function setLoading(isLoading) {
+                if (isLoading) {
+                    btnText.style.display = 'none';
+                    loading.classList.remove('hidden');
+                    signupBtn.disabled = true;
+                } else {
+                    btnText.style.display = 'inline';
+                    loading.classList.add('hidden');
+                    signupBtn.disabled = false;
+                }
+            }
+            
+            // Handle form submission
+            signupForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+                
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                
+                setLoading(true);
+                
+                const result = await app.signUp(email, password, fullName);
+                
+                setLoading(false);
+                
+                if (result.success) {
+                    // Show success message and redirect to sign in
+                    setTimeout(() => {
+                        window.location.href = 'signin.html';
+                    }, 2000);
+                } else {
+                    // Error notification already shown by app.signUp
+                    console.error('Sign up failed:', result.error);
+                }
+            });
+            
+            // Handle Google Sign-up (placeholder - requires actual Google OAuth setup)
+            googleSignupBtn.addEventListener('click', function() {
+                app.showNotification('Google Sign-up coming soon!', 'info');
+            });
+            
+            // Clear errors when user starts typing
+            ['fullName', 'email', 'password', 'confirmPassword'].forEach(fieldName => {
+                document.getElementById(fieldName).addEventListener('input', function() {
+                    if (this.classList.contains('error')) {
+                        this.classList.remove('error');
+                        document.getElementById(fieldName + 'Error').classList.remove('show');
+                    }
+                });
+            });
+            
+            // Clear terms error when checkbox is checked
+            document.getElementById('agreeTerms').addEventListener('change', function() {
+                if (this.checked) {
+                    document.getElementById('agreeTermsError').classList.remove('show');
+                }
+            });
+            
+            // Real-time password confirmation validation
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                const password = document.getElementById('password').value;
+                const confirmPassword = this.value;
+                const errorElement = document.getElementById('confirmPasswordError');
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    this.classList.add('error');
+                    errorElement.textContent = 'Passwords do not match';
+                    errorElement.classList.add('show');
+                } else {
+                    this.classList.remove('error');
+                    errorElement.classList.remove('show');
+                }
+            });
+            
+            // Redirect if already logged in
+            if (app.user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

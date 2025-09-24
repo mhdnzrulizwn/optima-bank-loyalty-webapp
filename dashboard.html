@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Optima Bank Loyalty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="dashboard.html" class="logo">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="active">Home</a></li>
+                <li><a href="vouchers.html">Vouchers</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <button class="icon-button cart-button" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="icon-button profile-button" title="Profile" onclick="window.location.href='profile.html'">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" title="Sign Out" onclick="app.signOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Section -->
+        <section class="welcome-section" style="margin-bottom: 2rem;">
+            <h1 id="welcomeMessage" style="color: var(--text-white); margin-bottom: 0.5rem;">Welcome back!</h1>
+            <p style="color: var(--text-gray);">Discover amazing rewards and redeem with your points</p>
+        </section>
+
+        <!-- User Stats -->
+        <section class="user-stats" id="userStats">
+            <div class="stat-card">
+                <div class="stat-value" id="userPoints">0</div>
+                <div class="stat-label">Available Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="membershipLevel" style="color: var(--accent-gold);">Silver</div>
+                <div class="stat-label">Membership Level</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalRedeemed">0</div>
+                <div class="stat-label">Vouchers Redeemed</div>
+            </div>
+        </section>
+
+        <!-- Search Bar -->
+        <section class="search-container">
+            <div style="position: relative;">
+                <i class="search-icon fas fa-search"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for vouchers...">
+            </div>
+        </section>
+
+        <!-- Category Filters -->
+        <section class="category-filters" id="categoryFilters">
+            <button class="category-btn active" data-category="all">All Categories</button>
+            <button class="category-btn" data-category="dining">Dining</button>
+            <button class="category-btn" data-category="shopping">Shopping</button>
+            <button class="category-btn" data-category="entertainment">Entertainment</button>
+            <button class="category-btn" data-category="travel">Travel</button>
+            <button class="category-btn" data-category="wellness">Wellness</button>
+        </section>
+
+        <!-- Featured Vouchers -->
+        <section class="vouchers-section">
+            <h2 style="color: var(--text-white); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-fire" style="color: var(--accent-orange);"></i>
+                Featured Rewards
+            </h2>
+            
+            <div class="vouchers-grid" id="vouchersGrid">
+                <!-- Loading placeholder -->
+                <div class="loading-placeholder" id="loadingPlaceholder">
+                    <div style="text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <div class="loading" style="width: 40px; height: 40px; margin: 0 auto 1rem;"></div>
+                        <p>Loading vouchers...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View All Button -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="vouchers.html" class="btn btn-outline">
+                    View All Vouchers <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="cart-title">Shopping Cart</h3>
+            <button class="cart-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <!-- Cart items will be inserted here -->
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <!-- Cart total and checkout button will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Terms and Conditions</h3>
+                <button class="modal-close" onclick="closeModal('termsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="termsContent">
+                <!-- Terms content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('termsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        // Sample voucher data (in production this would come from Supabase)
+        const sampleVouchers = [
+            {
+                id: '1',
+                title: '$20 OFF Dining',
+                description: 'Get $20 off your next dining experience at participating restaurants.',
+                discount: '$20 OFF',
+                points_required: 500,
+                category: 'dining',
+                min_purchase: 50,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating restaurants only. Cannot be combined with other offers.'
+            },
+            {
+                id: '2',
+                title: '15% OFF Shopping',
+                description: 'Save 15% on your shopping at selected retail partners.',
+                discount: '15% OFF',
+                points_required: 300,
+                category: 'shopping',
+                min_purchase: 100,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at selected retail partners. Minimum purchase required.'
+            },
+            {
+                id: '3',
+                title: 'Free Movie Ticket',
+                description: 'Enjoy a complimentary movie ticket at participating cinemas.',
+                discount: 'FREE',
+                points_required: 800,
+                category: 'entertainment',
+                min_purchase: 0,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating cinemas. Subject to availability.'
+            },
+            {
+                id: '4',
+                title: '$50 Travel Voucher',
+                description: 'Get $50 off your next travel booking with our travel partners.',
+                discount: '$50 OFF',
+                points_required: 1200,
+                category: 'travel',
+                min_purchase: 200,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid for travel bookings only. Minimum booking value required.'
+            },
+            {
+                id: '5',
+                title: 'Spa Day Package',
+                description: 'Relax with a full spa day package at premium wellness centers.',
+                discount: '50% OFF',
+                points_required: 1500,
+                category: 'wellness',
+                min_purchase: 150,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating wellness centers. Appointment required.'
+            },
+            {
+                id: '6',
+                title: '$10 Coffee Voucher',
+                description: 'Enjoy premium coffee with this $10 voucher at coffee shops.',
+                discount: '$10 OFF',
+                points_required: 200,
+                category: 'dining',
+                min_purchase: 15,
+                active: true,
+                expiry_date: '2024-12-31',
+                terms: 'Valid at participating coffee shops only.'
+            }
+        ];
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is authenticated
+            if (!app.user) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            // Wait for user data to load
+            await app.loadUserData();
+            
+            // Update UI with user information
+            updateUserInfo();
+            
+            // Load and display vouchers
+            loadFeaturedVouchers();
+            
+            // Set up search functionality
+            setupSearch();
+            
+            // Set up category filtering
+            setupCategoryFilters();
+        });
+        
+        function updateUserInfo() {
+            const profile = app.user?.profile;
+            if (!profile) return;
+            
+            // Update welcome message
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${profile.full_name}!`;
+            
+            // Update stats
+            document.getElementById('userPoints').textContent = app.formatPoints(profile.points || 0);
+            document.getElementById('membershipLevel').textContent = profile.membership_level || 'Silver';
+            
+            // For now, set total redeemed to 0 (would come from database in production)
+            document.getElementById('totalRedeemed').textContent = '0';
+        }
+        
+        async function loadFeaturedVouchers() {
+            const vouchersGrid = document.getElementById('vouchersGrid');
+            const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+            
+            try {
+                // Simulate loading delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // In production, this would be: const vouchers = await app.loadVouchers();
+                const vouchers = sampleVouchers.slice(0, 6); // Show first 6 vouchers on home page
+                
+                // Hide loading placeholder
+                loadingPlaceholder.style.display = 'none';
+                
+                // Render vouchers
+                renderVouchers(vouchers, vouchersGrid);
+                
+            } catch (error) {
+                console.error('Error loading vouchers:', error);
+                loadingPlaceholder.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--error-red);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Error loading vouchers</p>
+                        <button class="btn btn-primary" onclick="loadFeaturedVouchers()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderVouchers(vouchers, container) {
+            if (vouchers.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-gray);">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>No vouchers found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = vouchers.map(voucher => `
+                <div class="voucher-card fade-in">
+                    <div class="voucher-header">
+                        <div class="voucher-discount">${voucher.discount}</div>
+                        <div class="voucher-title">${voucher.title}</div>
+                    </div>
+                    <div class="voucher-body">
+                        <div class="voucher-points">
+                            <span class="points-required">${app.formatPoints(voucher.points_required)} Points</span>
+                            <span style="color: var(--text-light-gray); font-size: 0.9rem;">
+                                Min: $${voucher.min_purchase}
+                            </span>
+                        </div>
+                        <div class="voucher-description">${voucher.description}</div>
+                        <div class="voucher-actions">
+                            <button class="btn btn-outline" onclick="showTerms('${voucher.id}')">
+                                Terms
+                            </button>
+                            <button class="btn btn-secondary" onclick="addVoucherToCart('${voucher.id}')">
+                                Add to Cart
+                            </button>
+                            <button class="btn btn-primary" onclick="redeemVoucherNow('${voucher.id}')">
+                                Redeem Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = this.value.trim();
+                    filterVouchers(query);
+                }, 300);
+            });
+        }
+        
+        function setupCategoryFilters() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Filter vouchers
+                    const category = this.dataset.category;
+                    filterVouchersByCategory(category);
+                });
+            });
+        }
+        
+        function filterVouchers(query) {
+            const filtered = sampleVouchers.filter(voucher => 
+                voucher.title.toLowerCase().includes(query.toLowerCase()) ||
+                voucher.description.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            const vouchersGrid = document.getElementById('vouchersGrid');
+            renderVouchers(filtered, vouchersGrid);
+        }
+        
+        function filterVouchersByCategory(category) {
+            const filtered = category === 'all' 
+                ? sampleVouchers 
+                : sampleVouchers.filter(voucher => voucher.category === category);
+            
+            const vouchersGrid = document.getElementById('vouchersGrid');
+            renderVouchers(filtered, vouchersGrid);
+        }
+        
+        // Global functions for voucher actions
+        window.addVoucherToCart = function(voucherId) {
+            const voucher = sampleVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                app.addToCart(voucher, 1);
+            }
+        };
+        
+        window.redeemVoucherNow = function(voucherId) {
+            const voucher = sampleVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                // Clear cart and add this voucher
+                app.clearCart();
+                app.addToCart(voucher, 1);
+                // Proceed to checkout
+                window.location.href = 'checkout.html';
+            }
+        };
+        
+        window.showTerms = function(voucherId) {
+            const voucher = sampleVouchers.find(v => v.id === voucherId);
+            if (voucher) {
+                const modal = document.getElementById('termsModal');
+                const content = document.getElementById('termsContent');
+                
+                content.innerHTML = `
+                    <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">${voucher.title}</h4>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Minimum Purchase:</strong> $${voucher.min_purchase}<br>
+                        <strong>Valid Until:</strong> ${app.formatDate(voucher.expiry_date)}<br>
+                        <strong>Points Required:</strong> ${app.formatPoints(voucher.points_required)}
+                    </div>
+                    <div style="line-height: 1.6;">
+                        <strong>Terms and Conditions:</strong><br>
+                        ${voucher.terms}
+                    </div>
+                `;
+                
+                modal.classList.add('show');
+            }
+        };
+        
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        };
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
+            }
+        });
+        
+        // Make app globally available
+        window.app = app;
+    </script>
+</body>
+</html>

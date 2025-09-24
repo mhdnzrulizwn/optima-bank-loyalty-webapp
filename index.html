@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optima Bank Customer Loyalty Program</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Landing Page Content -->
+    <div style="min-height: 100vh; display: flex; flex-direction: column;">
+        
+        <!-- Hero Section -->
+        <section style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+            <div style="text-align: center; max-width: 800px;">
+                
+                <!-- Logo -->
+                <div class="logo" style="justify-content: center; margin-bottom: 2rem; font-size: 3rem;">
+                    <span class="logo-optima">Optima</span>
+                    <span class="logo-bank">bank</span>
+                </div>
+                
+                <!-- Hero Text -->
+                <h1 style="font-size: 3rem; font-weight: 700; color: var(--text-white); margin-bottom: 1rem; line-height: 1.2;">
+                    Customer Loyalty Program
+                </h1>
+                
+                <p style="font-size: 1.25rem; color: var(--text-gray); margin-bottom: 3rem; line-height: 1.6;">
+                    Earn points, redeem rewards, and enjoy exclusive benefits with our comprehensive loyalty program. 
+                    Browse vouchers, manage your rewards, and get the most out of your Optima Bank membership.
+                </p>
+                
+                <!-- Feature Highlights -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin: 3rem 0; text-align: left;">
+                    <div style="background: var(--secondary-navy); padding: 1.5rem; border-radius: var(--border-radius-lg); border-left: 4px solid var(--accent-orange);">
+                        <div style="color: var(--accent-orange); font-size: 2rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 style="color: var(--text-white); margin-bottom: 0.5rem;">Earn Points</h3>
+                        <p style="color: var(--text-gray); font-size: 0.9rem;">
+                            Accumulate loyalty points with every transaction and banking activity
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--secondary-navy); padding: 1.5rem; border-radius: var(--border-radius-lg); border-left: 4px solid var(--accent-purple);">
+                        <div style="color: var(--accent-purple); font-size: 2rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 style="color: var(--text-white); margin-bottom: 0.5rem;">Redeem Rewards</h3>
+                        <p style="color: var(--text-gray); font-size: 0.9rem;">
+                            Choose from hundreds of vouchers across dining, shopping, and entertainment
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--secondary-navy); padding: 1.5rem; border-radius: var(--border-radius-lg); border-left: 4px solid var(--accent-gold);">
+                        <div style="color: var(--accent-gold); font-size: 2rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 style="color: var(--text-white); margin-bottom: 0.5rem;">Premium Benefits</h3>
+                        <p style="color: var(--text-gray); font-size: 0.9rem;">
+                            Unlock exclusive perks and higher tier benefits as you progress
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Call to Action -->
+                <div style="margin-top: 3rem;">
+                    <button class="btn btn-primary" onclick="checkAuthAndRedirect()" style="font-size: 1.1rem; padding: 1rem 2rem; margin-right: 1rem;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Get Started
+                    </button>
+                    <a href="#demo" class="btn btn-outline" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                        <i class="fas fa-play"></i>
+                        View Demo
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Demo Section -->
+        <section id="demo" style="background: var(--secondary-navy); padding: 4rem 2rem;">
+            <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                <h2 style="font-size: 2.5rem; color: var(--text-white); margin-bottom: 2rem;">
+                    Explore the Platform
+                </h2>
+                <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Experience all features with our interactive demo. No registration required - 
+                    jump right in and explore the complete loyalty program interface.
+                </p>
+                
+                <!-- Demo Features Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                    
+                    <!-- Authentication Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="window.location.href='signin.html'">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--accent-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user-lock"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">Authentication System</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Complete sign-in/sign-up flow with validation, password recovery, and session management.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> Try Demo Login
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="demoLogin('dashboard')">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--accent-purple); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">User Dashboard</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Personal dashboard with points balance, featured vouchers, and quick actions.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> View Dashboard
+                        </div>
+                    </div>
+                    
+                    <!-- Vouchers Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="demoLogin('vouchers')">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--accent-gold); color: var(--primary-navy); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">Voucher Marketplace</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Browse, filter, and search through hundreds of available vouchers and rewards.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> Browse Vouchers
+                        </div>
+                    </div>
+                    
+                    <!-- Checkout Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="demoCheckout()">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--success-green); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">Checkout & Redemption</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Complete redemption process with PDF voucher generation and unique coupon codes.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> Try Checkout
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="demoLogin('profile')">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--accent-orange); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">Profile Management</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Manage account details, view redemption history, and track voucher status.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> View Profile
+                        </div>
+                    </div>
+                    
+                    <!-- Technical Demo -->
+                    <div class="card" style="text-align: left; transition: transform 0.3s ease; cursor: pointer;" onclick="showTechnicalInfo()">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="background: var(--accent-purple); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 style="color: var(--text-white); margin: 0;">Technical Features</h3>
+                        </div>
+                        <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                            Modern web technologies, responsive design, and production-ready architecture.
+                        </p>
+                        <div style="color: var(--accent-orange); font-size: 0.9rem;">
+                            <i class="fas fa-arrow-right"></i> View Documentation
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Start Button -->
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-success" onclick="demoLogin('dashboard')" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                        <i class="fas fa-rocket"></i>
+                        Start Demo Experience
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer style="background: var(--primary-navy); padding: 2rem; text-align: center; border-top: 1px solid var(--secondary-navy);">
+            <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                <span class="logo-optima">Optima</span>
+                <span class="logo-bank">bank</span>
+            </div>
+            <p style="color: var(--text-gray); font-size: 0.9rem;">
+                © 2024 Optima Bank. All rights reserved. | 
+                <a href="#" style="color: var(--accent-orange);">Privacy Policy</a> | 
+                <a href="#" style="color: var(--accent-orange);">Terms of Service</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Technical Info Modal -->
+    <div class="modal-overlay" id="technicalModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Technical Implementation</h3>
+                <button class="modal-close" onclick="closeModal('technicalModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Technologies Used</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div>
+                        <strong style="color: var(--text-white);">Frontend:</strong>
+                        <ul style="color: var(--text-gray); margin-top: 0.5rem;">
+                            <li>HTML5 + Semantic Markup</li>
+                            <li>CSS3 + Grid & Flexbox</li>
+                            <li>Vanilla JavaScript ES6+</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-white);">Libraries:</strong>
+                        <ul style="color: var(--text-gray); margin-top: 0.5rem;">
+                            <li>Font Awesome Icons</li>
+                            <li>Google Fonts (Inter)</li>
+                            <li>jsPDF for voucher generation</li>
+                            <li>Supabase integration ready</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--accent-orange); margin-bottom: 1rem;">Key Features</h4>
+                <ul style="color: var(--text-gray); line-height: 1.8;">
+                    <li><strong>Authentication:</strong> Complete user management with Supabase integration</li>
+                    <li><strong>Responsive Design:</strong> Mobile-first approach with adaptive layouts</li>
+                    <li><strong>Real-time Updates:</strong> Dynamic cart management and point calculations</li>
+                    <li><strong>PDF Generation:</strong> Downloadable vouchers with unique coupon codes</li>
+                    <li><strong>Local Storage:</strong> Persistent cart and session management</li>
+                    <li><strong>Form Validation:</strong> Real-time validation with error handling</li>
+                </ul>
+                
+                <div style="background: var(--primary-navy); padding: 1rem; border-radius: var(--border-radius-sm); margin-top: 2rem;">
+                    <strong style="color: var(--accent-gold);">Production Ready:</strong>
+                    <p style="color: var(--text-gray); margin: 0.5rem 0 0 0;">
+                        This demo includes all core features for a production loyalty program. 
+                        Supabase integration is configured and ready for deployment.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('technicalModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import app from './js/main.js';
+        
+        // Make app globally available
+        window.app = app;
+        
+        // Check if user is already authenticated
+        window.checkAuthAndRedirect = function() {
+            if (app.user) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'signin.html';
+            }
+        };
+        
+        // Demo login function
+        window.demoLogin = async function(page = 'dashboard') {
+            // Auto-login for demo
+            const result = await app.signIn('demo@optimabank.com', 'demo123456');
+            
+            if (result.success) {
+                // Redirect to requested page
+                switch(page) {
+                    case 'dashboard':
+                        window.location.href = 'dashboard.html';
+                        break;
+                    case 'vouchers':
+                        window.location.href = 'vouchers.html';
+                        break;
+                    case 'profile':
+                        window.location.href = 'profile.html';
+                        break;
+                    default:
+                        window.location.href = 'dashboard.html';
+                }
+            }
+        };
+        
+        // Demo checkout function
+        window.demoCheckout = async function() {
+            // Auto-login and add sample voucher to cart
+            const result = await app.signIn('demo@optimabank.com', 'demo123456');
+            
+            if (result.success) {
+                // Add sample voucher to cart
+                const sampleVoucher = {
+                    id: 'demo-voucher-1',
+                    title: '$20 OFF Dining',
+                    description: 'Get $20 off your next dining experience at participating restaurants.',
+                    discount: '$20 OFF',
+                    points_required: 500,
+                    category: 'dining',
+                    min_purchase: 50,
+                    terms: 'Valid at participating restaurants only. Cannot be combined with other offers.'
+                };
+                
+                app.addToCart(sampleVoucher, 1);
+                window.location.href = 'checkout.html';
+            }
+        };
+        
+        // Technical info modal
+        window.showTechnicalInfo = function() {
+            document.getElementById('technicalModal').classList.add('show');
+        };
+        
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        };
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('show');
+            }
+        });
+        
+        // Add hover effects to demo cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
